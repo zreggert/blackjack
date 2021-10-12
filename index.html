@@ -10,7 +10,7 @@
 <body>
     <div id="deck-container" class="container">
         <div id="deck">
-            <p>Total cards left:</p>
+            <p>Total cards left: <span id="deck-count"></span></p>
         </div>
     </div>
     <br/>
@@ -38,13 +38,22 @@
             <div id="player-cash">
 
             </div>
+            <div id="player-bet">
+                
+            </div>
         </div>
     </div>
     <br/>
     <div id="play-actions" class="container">
         <h1>Actions</h1>
-        <button>Deal</button>
-        <button>Bet</button>
+        <button class="deal-btn">Deal</button>
+        <button class="bet-btn">Bet</button>
+        <button class="hit-btn">Hit</button>
+        <button class="stay-btn">Stay</button>
+        <h3>Bets</h3>
+        <div id="bet-amounts">
+
+        </div>
     </div>
 </body>
 <script src="script.js"></script>

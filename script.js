@@ -1,16 +1,24 @@
+const dealBtn = document.querySelector(".deal-btn");
+const betBtn = document.querySelector(".bet-btn");
+const hitBtn = document.querySelector(".hit-btn");
+const stayBtn = document.querySelector(".stay-btn");
+let deckCount = document.getElementById("deck-count");
+const betAmounts = document.getElementById("bet-amounts")
+
 //function creates a single deck of 52
 function createDeck() {
-    let deckOfFiftyTwo = [];
+    let deck = [];
     let suit = ['S', 'H', 'C', 'D'];
     let rank = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
 
     for (suitCount = 0; suitCount < 4; suitCount++) {
         for (rankCount = 0; rankCount < 13; rankCount++) {
         //console.log(rank[rankCount] + suit[suitCount]);
-            deckOfFiftyTwo.push(rank[rankCount] + suit[suitCount]);
+            deck.push(rank[rankCount] + suit[suitCount]);
         }
     }
-    return deckOfFiftyTwo;
+    deckCount.append(deck.length)
+    return deck;
 }
 
 
@@ -41,18 +49,36 @@ function deal(deck) {
         dealersHand.push(deck.shift());
     }
 
+    for (let i = 0; i < playersHand.length; i++) {
+
+    }
     console.log(playersHand);
     console.log(dealersHand);
     console.log(deck.length)
+    
+    deckCount.innerHTML = deck.length;
 }
 
 
 //initializes game
-function init() {
+dealBtn.addEventListener("click", function(event) {
     shuffleDeck();
-    console.log('initializing');
-};
+})
 
-init();
+//button reveals new buttons to select bet amounts
+betBtn.addEventListener("click", function(event) {
+    let amounts = [5, 10, 25, 100];
+
+    for (let i = 0; i < amounts.length; i++) {
+        let chip = document.createElement("button");
+        chip.innerHTML = amounts[i]
+        chip.value = amounts[i]
+        chip.classList.add('chip')
+        betAmounts.appendChild(chip)
+        chip.addEventListener("click", function(event) {
+            console.log(chip.value)
+        })
+    }
+})
 
 
