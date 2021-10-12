@@ -1,0 +1,9 @@
+body {
+    display: flex;
+    justify-content: space-between;
+}
+.container{
+    border: 2px solid black;
+    height: 300px;
+    width: 300px;
+}
