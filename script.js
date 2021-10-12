@@ -27,6 +27,32 @@ function shuffleDeck() {
         deck[i] = deck[randomIndex];
         deck[randomIndex] = randCard;
     }
-    return deck
+    console.log(deck)
+    deal(deck)
 }
+
+//function deals the top card of the shuffled deck to the player and then one to the dealer. Once both the player and dealer have 2 cards the loop finishes
+function deal(deck) {
+    let playersHand = [];
+    let dealersHand = [];
+
+    while (playersHand.length < 2 && dealersHand.length < 2) {
+        playersHand.push(deck.shift());
+        dealersHand.push(deck.shift());
+    }
+
+    console.log(playersHand);
+    console.log(dealersHand);
+    console.log(deck.length)
+}
+
+
+//initializes game
+function init() {
+    shuffleDeck();
+    console.log('initializing');
+};
+
+init();
+
 
