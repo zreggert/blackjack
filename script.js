@@ -3,7 +3,12 @@ const betBtn = document.querySelector(".bet-btn");
 const hitBtn = document.querySelector(".hit-btn");
 const stayBtn = document.querySelector(".stay-btn");
 let deckCount = document.getElementById("deck-count");
-const betAmounts = document.getElementById("bet-amounts")
+const betAmounts = document.getElementById("bet-amounts");
+let betTotal = document.getElementById("bet-total");
+let bet = 0;
+let handInPlay = false;
+let playerCards = document.getElementById("player-cards");
+let dealerCards = document.getElementById("dealer-cards");
 
 //function creates a single deck of 52
 function createDeck() {
@@ -52,33 +57,54 @@ function deal(deck) {
     for (let i = 0; i < playersHand.length; i++) {
 
     }
-    console.log(playersHand);
-    console.log(dealersHand);
-    console.log(deck.length)
+    playerCards.innerHTML = playersHand;
+    dealerCards.innerHTML = dealersHand;
     
     deckCount.innerHTML = deck.length;
 }
 
 
 //initializes game
+//when the hand begins, the option to bet is removed until after the player or dealer wins the hand
 dealBtn.addEventListener("click", function(event) {
-    shuffleDeck();
+    if (bet === 0) {
+        alert('Please place a bet to be dealt cards.')
+    } else {
+        handInPlay = true;
+        while (betAmounts.firstChild) {
+            betAmounts.removeChild(betAmounts.firstChild)
+        }
+        shuffleDeck();  
+    }
 })
 
 //button reveals new buttons to select bet amounts
 betBtn.addEventListener("click", function(event) {
-    let amounts = [5, 10, 25, 100];
-
-    for (let i = 0; i < amounts.length; i++) {
-        let chip = document.createElement("button");
-        chip.innerHTML = amounts[i]
-        chip.value = amounts[i]
-        chip.classList.add('chip')
-        betAmounts.appendChild(chip)
-        chip.addEventListener("click", function(event) {
-            console.log(chip.value)
-        })
+    if (handInPlay === true) {
+        alert('Cannot bet until after this hand is finished.')
+    } else {
+        let amounts = [5, 10, 25, 100];
+        let betCount = [];
+        let reducer = (previous, current) => previous + current;
+    
+        //creates buttons for each of the chip amounts
+        //each button has an event listener to add up the total value of the amount the player would llike to bet
+        for (let i = 0; i < amounts.length; i++) {
+            let chip = document.createElement("button");
+            chip.innerHTML = amounts[i]
+            chip.value = parseInt(amounts[i])
+            chip.classList.add('chip')
+            betAmounts.appendChild(chip)
+    
+            chip.addEventListener("click", function(event) {
+                betCount.push(parseInt(chip.value))
+                console.log(betCount.reduce(reducer));
+                bet = betCount.reduce(reducer)
+                betTotal.innerHTML = betCount.reduce(reducer)
+            })
+        }
     }
+
 })
 
 
