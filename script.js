@@ -10,6 +10,10 @@ let handInPlay = false;
 let playerCards = document.getElementById("player-cards");
 let dealerCards = document.getElementById("dealer-cards");
 let playerTotal = document.getElementById("player-total");
+let playerCash = document.getElementById("player-cash");
+let cash = 1000;
+
+playerCash.innerHTML = cash
 
 //function creates a single deck of 52
 function createDeck() {
@@ -51,25 +55,36 @@ function deal(deck) {
     let dealersHand = [];
     let dealersHandTotal = 0;
 
+    //this loop deals the cards
     while (playersHand.length < 2 && dealersHand.length < 2) {
         playersHand.push(deck.shift());
         dealersHand.push(deck.shift());
     };
 
+    //checks totals so we can see if we have a blackjack or bust off the deal
     playersHandTotal = sumOfCards(playersHand);
     dealersHandTotal = sumOfCards(dealersHand);
 
+    if (playersHandTotal > 21) {
+        return "Player bust, dealer wins";
+    } else if (playersHandTotal === 21) {
+        return "Blackjack! Player wins!";
+    }
+
+    if (dealersHandTotal > 21) {
+
+    }
+
     playersHand.forEach((card) => {
-        let cardEl = document.createElement('p');
-        cardEl.innerHTML = card.rank + card.suit;
-        playerCards.appendChild(cardEl)
+        playerCards.appendChild(createCard(card))
     })
 
     dealersHand.forEach((card) => {
-        let cardEl = document.createElement('p');
-        cardEl.innerHTML = card.rank + card.suit;
-        dealerCards.appendChild(cardEl)
+        dealerCards.appendChild(createCard(card))
     })
+    dealerCards.lastChild.classList.add("hidden-card")
+
+
 
     console.log(playersHand)
     console.log(playersHandTotal)
@@ -77,6 +92,14 @@ function deal(deck) {
     console.log(dealersHandTotal)
 
     deckCount.innerHTML = deck.length;
+
+    playThisHand(deck, playersHand);
+}
+
+function createCard(card) {
+    let cardEl = document.createElement('p');
+    cardEl.innerHTML = card.rank + card.suit;
+    return cardEl
 }
 
 //takes either the player's or dealer's hand as an arguement and returns the sum of the ranks of the cards
@@ -95,17 +118,19 @@ function sumOfCards(hand) {
             handTotal += parseInt(card.rank)
         }
     });
-    if (handTotal > 21) {
-        losingHand();
-    } else if (handTotal === 21) {
-        blackJack();
-    } else {
-        return handTotal
-    }
-    
+    return handTotal
 }
 
-//initializes game
+function playThisHand(deck, playersHand) {
+    hitBtn.addEventListener("click", function(event) {
+        playersHand.push(deck.shift())
+        playerCards.append(createCard(playersHand[playersHand.length - 1]))
+        console.log(playersHand);
+        playersHandTotal = sumOfCards(playersHand);
+        console.log(playersHandTotal)
+    })
+}
+//initializes hand
 //when the hand begins, the option to bet is removed until after the player or dealer wins the hand
 dealBtn.addEventListener("click", function(event) {
     if (bet === 0) {
@@ -117,6 +142,9 @@ dealBtn.addEventListener("click", function(event) {
         }
         shuffleDeck();  
     }
+    cash -= bet
+    playerCash.innerHTML = cash
+    
 })
 
 //button reveals new buttons to select bet amounts
