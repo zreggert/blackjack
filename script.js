@@ -9,29 +9,30 @@ let bet = 0;
 let handInPlay = false;
 let playerCards = document.getElementById("player-cards");
 let dealerCards = document.getElementById("dealer-cards");
+let playerTotal = document.getElementById("player-total");
 
 //function creates a single deck of 52
 function createDeck() {
     let deck = [];
-    let suit = ['S', 'H', 'C', 'D'];
+    let suits = ['S', 'H', 'C', 'D'];
     let rank = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
 
-    for (suitCount = 0; suitCount < 4; suitCount++) {
-        for (rankCount = 0; rankCount < 13; rankCount++) {
-        //console.log(rank[rankCount] + suit[suitCount]);
-            deck.push(rank[rankCount] + suit[suitCount]);
+    for (let i = 0; i < suits.length; i++) {
+        for (let j = 0; j < rank.length; j++) {
+            let card = {rank: rank[j], suit: suits[i]}
+            deck.push(card)
         }
     }
     deckCount.append(deck.length)
+    console.log(deck)
     return deck;
+
 }
 
 
 //function invokes the createDeck function creating a single deck and then shuffling that deck
 function shuffleDeck() {
     let deck = createDeck();
-
-    console.log(deck)
 
     for(let i = 0; i < deck.length; i++) {
         
@@ -40,29 +41,69 @@ function shuffleDeck() {
         deck[i] = deck[randomIndex];
         deck[randomIndex] = randCard;
     }
-    console.log(deck)
     deal(deck)
 }
 
 //function deals the top card of the shuffled deck to the player and then one to the dealer. Once both the player and dealer have 2 cards the loop finishes
 function deal(deck) {
     let playersHand = [];
+    let playersHandTotal = 0;
     let dealersHand = [];
+    let dealersHandTotal = 0;
 
     while (playersHand.length < 2 && dealersHand.length < 2) {
         playersHand.push(deck.shift());
         dealersHand.push(deck.shift());
-    }
+    };
 
-    for (let i = 0; i < playersHand.length; i++) {
+    playersHandTotal = sumOfCards(playersHand);
+    dealersHandTotal = sumOfCards(dealersHand);
 
-    }
-    playerCards.innerHTML = playersHand;
-    dealerCards.innerHTML = dealersHand;
-    
+    playersHand.forEach((card) => {
+        let cardEl = document.createElement('p');
+        cardEl.innerHTML = card.rank + card.suit;
+        playerCards.appendChild(cardEl)
+    })
+
+    dealersHand.forEach((card) => {
+        let cardEl = document.createElement('p');
+        cardEl.innerHTML = card.rank + card.suit;
+        dealerCards.appendChild(cardEl)
+    })
+
+    console.log(playersHand)
+    console.log(playersHandTotal)
+    console.log(dealersHand)
+    console.log(dealersHandTotal)
+
     deckCount.innerHTML = deck.length;
 }
 
+//takes either the player's or dealer's hand as an arguement and returns the sum of the ranks of the cards
+function sumOfCards(hand) {
+    let handTotal = 0;
+    hand.forEach((card) => {
+        if (card.rank === "T" || card.rank === "J" || card.rank === "Q" || card.rank === "K") {
+            handTotal += 10
+        } else if (card.rank === "A") {
+            if (handTotal <= 10) {
+                handTotal += 11
+            } else {
+                handTotal += 1
+            }
+        } else {
+            handTotal += parseInt(card.rank)
+        }
+    });
+    if (handTotal > 21) {
+        losingHand();
+    } else if (handTotal === 21) {
+        blackJack();
+    } else {
+        return handTotal
+    }
+    
+}
 
 //initializes game
 //when the hand begins, the option to bet is removed until after the player or dealer wins the hand
@@ -83,6 +124,7 @@ betBtn.addEventListener("click", function(event) {
     if (handInPlay === true) {
         alert('Cannot bet until after this hand is finished.')
     } else {
+        
         let amounts = [5, 10, 25, 100];
         let betCount = [];
         let reducer = (previous, current) => previous + current;
@@ -104,7 +146,6 @@ betBtn.addEventListener("click", function(event) {
             })
         }
     }
-
-})
+});
 
 
