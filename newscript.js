@@ -35,14 +35,11 @@ function createDeck() {
         }
     }
     deckCount.innerHTML = deck.length
-    return deck;
+    shuffleDeck(deck)
 }
 
-
-//function invokes the createDeck function creating a single deck and then shuffling that deck
-function shuffleDeck() {
-    deck = createDeck();
-
+//shuffles deck that was created in createDeck
+function shuffleDeck(deck) {
     for(let i = 0; i < deck.length; i++) {
         
         let randCard = deck[i];
@@ -51,29 +48,18 @@ function shuffleDeck() {
         deck[randomIndex] = randCard;
     }
     console.log(deck)
-    deal(deck)
+    return deck
 }
 
-//function deals the top card of the shuffled deck to the player and then one to the dealer. Once both the player and dealer have 2 cards the loop finishes
+//deals cards to player's and dealer's hands
 function deal(deck) {
-    // let playersHand = [];
-    // let playersHandTotal = 0;
-    // let dealersHand = [];
-
-    //this loop deals the cards
+    console.log(`dealing deck`)
     while (playersHand.length < 2 && dealersHand.length < 2) {
         playersHand.push(deck.shift());
         dealersHand.push(deck.shift());
     };
-
     console.log(playersHand)
     console.log(dealersHand)
-    //checks totals so we can see if we have a blackjack or bust off the deal
-    playersHandTotal = sumOfCards(playersHand);
-
-    if (playersHandTotal === 21) {
-        return "Blackjack! Player wins!";
-    } 
 
     playersHand.forEach((card) => {
         playerCards.appendChild(createCard(card))
@@ -86,14 +72,21 @@ function deal(deck) {
 
     deckCount.innerHTML = deck.length;
 
-    playThisHand(deck, playersHand, dealersHand);
+    isBlackJack(playersHand);
 }
 
-//this function creates a card element from the card object
-function createCard(card) {
-    let cardEl = document.createElement('p');
-    cardEl.innerHTML = card.rank + card.suit;
-    return cardEl
+//function checks for blackjack
+function isBlackJack(hand) {
+    let handTotal = sumOfCards(hand);
+    if (handTotal === 21) {
+        hitBtn.disabled = true;
+        stayBtn.disabled = true;
+        dealerCards.lastChild.classList.remove("hidden-card");
+        setTimeout(() => {
+            alert(`Blackjack! You win this hand!`)
+        }, 500)
+        playerWins();
+    }
 }
 
 //takes either the player's or dealer's hand as an arguement and returns the sum of the ranks of the cards
@@ -115,120 +108,166 @@ function sumOfCards(hand) {
     return handTotal
 }
 
-//this function takes the shuffled deck, players hand, and dealers hand and allows the player to play their hand. they can choose to either hit or stay. if they hit another card is added to their hand. if they stay the playDealersHand function is fired off
-function playThisHand(deck, playersHand, dealersHand) {
-    console.log(deck)
-    stayBtn.addEventListener("click", function(event) {
-        dealerCards.lastChild.classList.remove("hidden-card")
-        playDealersHand(deck, dealersHand, playersHand);
-    })
-
-    hitBtn.addEventListener("click", function(event) {
-        playersHand.push(deck.shift())
-        console.log(playersHand)
-        playerCards.append(createCard(playersHand[playersHand.length - 1]))
-        playersHandTotal = sumOfCards(playersHand);
-        deckCount.innerHTML = deck.length
-
-        if (playersHandTotal > 21) {
-            playerLoses();
-            hitBtn.disabled = true;
-            stayBtn.disabled = true;
-        } else if (playersHandTotal === 21) {
-            playerWins();
-        }
-    })
+//this function creates a card element from the card object
+function createCard(card) {
+    let cardEl = document.createElement('p');
+    cardEl.innerHTML = card.rank + card.suit;
+    return cardEl
 }
 
-function playDealersHand(deck, dealersHand, playersHand) {
-    dealersHandTotal = sumOfCards(dealersHand)
-    playersHandTotal = sumOfCards(playersHand)
-    console.log(`this is the dealers total ` + dealersHandTotal);
-    while (dealersHandTotal < 17) {
-        dealersHand.push(deck.shift())
-        dealerCards.append(createCard(dealersHand[dealersHand.length - 1]))
-        dealersHandTotal = sumOfCards(dealersHand);
-        console.log(dealersHandTotal)
-    }
-    if (dealersHandTotal >= 17 && dealersHandTotal <= 21) {
-        compareHands(dealersHandTotal, playersHandTotal);
-    } else if (dealersHandTotal > 21) {
-        playerWins();
-    }
-}
-
-function compareHands(dealersHandTotal, playersHandTotal) {
-    console.log(`this is happening`)
-    if (playersHandTotal > dealersHandTotal) {
-        playerWins();
-    } else if (dealersHandTotal >= playersHandTotal) {
+//checks when the hand busts
+function checkForBust(total) {
+    if (total > 21) {
+        hitBtn.disabled = true;
+        stayBtn.disabled = true;
+        dealerCards.lastChild.classList.remove("hidden-card");
+        setTimeout(() => {
+            alert(`Bust! You lose!`)
+        }, 500);
         playerLoses();
     }
 }
 
-function playerLoses() {
-    console.log("Bust. You Lose!");
-    betTotal.innerHTML = '';
-    betBtn.disabled = false;
-    dealerCards.lastChild.classList.remove("hidden-card");
-    bet = 0
+//play the dealers hand
+function playDealersHand() {
+    dealersHandTotal = sumOfCards(dealersHand)
+    console.log(dealersHandTotal)
+    while (dealersHandTotal < 17) {
+        dealersHand.push(deck.shift());
+        dealerCards.append(createCard(dealersHand[dealersHand.length - 1]));
+        dealersHandTotal = sumOfCards(dealersHand);
+    }
+    if (dealersHandTotal === 21) {
+        console.log(`dealer blackjack`);
+        playerLoses();
+    } else if (dealersHandTotal < 21) {
+        compareHands()
+    } else {
+        console.log(`dealer busts. player wins`)
+        playerWins();
+    }
 }
 
+function compareHands() {
+    console.log(`this function compares the hands`);
+    playersHandTotal = sumOfCards(playersHand)
+    if (dealersHandTotal >= playersHandTotal) {
+        playerLoses();
+    } else {
+        playerWins();
+    }
+}
+
+//player is the winner. add bet times 2 to players cash
 function playerWins() {
-    cash += (bet*2)
-    playerCash.innerHTML = cash
-    console.log("You Win")
+    hitBtn.disabled = true;
+    stayBtn.disabled = true;
     betBtn.disabled = false;
+    console.log(`winner`);
+    cash += (bet * 2);
+    playerCash.innerHTML = cash
     betTotal.innerHTML = '';
-    dealerCards.lastChild.classList.remove("hidden-card");
 }
 
+//player loses and loses bet money
+function playerLoses() {
+    hitBtn.disabled = true;
+    stayBtn.disabled = true;
+    betBtn.disabled = false;
+    console.log(`loser`);
+    betTotal.innerHTML = '';
+}
+
+//resets table
 function resetTable() {
-
+    
 }
-//initializes hand
-//when the hand begins, the option to bet is removed until after the player or dealer wins the hand
+
+//stay btn event listener
+stayBtn.addEventListener("click", function(event) {
+    handleStayBtn();
+})
+//handles stay btn functions
+function handleStayBtn() {
+    dealerCards.lastChild.classList.remove("hidden-card");
+    playDealersHand();
+}
+
+//hit btn event listener
+hitBtn.addEventListener("click", function(event) {
+    handleHitBtn();
+})
+
+//handles hit btn functions
+function handleHitBtn() {
+    playersHand.push(deck.shift())
+    console.log(playersHand)
+    playerCards.append(createCard(playersHand[playersHand.length - 1]))
+    playersHandTotal = sumOfCards(playersHand);
+    deckCount.innerHTML = deck.length
+    isBlackJack(playersHand)
+    checkForBust(playersHandTotal);
+}
+
+//dealBtn listener
 dealBtn.addEventListener("click", function(event) {
     hitBtn.disabled = false;
     stayBtn.disabled = false;
+    handleDealBtn();
+})
+
+//handles dealbtn functionality
+function handleDealBtn() {
+    cash -= bet
+    playerCash.innerHTML = cash
     if (bet === 0) {
         alert('Please place a bet to be dealt cards.')
     } else {
         dealBtn.disabled = true
-        handInPlay = true;
         while (betAmounts.firstChild) {
             betAmounts.removeChild(betAmounts.firstChild)
         }
-        if (deck.length === 0) {
-            shuffleDeck();  
+        if (deck.length < 15) {
+            deck = []
+            createDeck();
+            deal(deck);
         } else {
-            deal(deck)
+            deal(deck);
         }
-        
     }
-    cash -= bet
-    playerCash.innerHTML = cash
+}
+
+
+//starts the betting process
+betBtn.addEventListener("click", function(event) {
+    handleBetBtn();
+    betTotal.innerHTML = '';
+    bet = 0
 })
 
-//button reveals new buttons to select bet amounts
-betBtn.addEventListener("click", function(event) {
+function handleBetBtn() {
     dealBtn.disabled = false;
-    betBtn.disabled = true
+    betBtn.disabled = true;
+    clearHands();
+    createChips();
+}
+
+//removes cards from the hand arrays and the hand elements
+function clearHands() {
     while (dealerCards.firstChild) {
-        dealerCards.removeChild(dealerCards.firstChild)
+        dealerCards.removeChild(dealerCards.firstChild);
+        dealersHand.pop();
     }
     while (playerCards.firstChild) {
-        playerCards.removeChild(playerCards.firstChild)
-    }
-    for (let i = 0; i <= playersHand.length; i++) {
+        playerCards.removeChild(playerCards.firstChild);
         playersHand.pop()
-    }
-    for (let i = 0; i <= dealersHand.length; i++) {
-        dealersHand.pop()
     }
     console.log(dealersHand);
     console.log(playersHand)
+}
 
+//creating the chip buttons so bets can be placed
+function createChips() {
     let amounts = [5, 10, 25, 100];
     let betCount = [];
     console.log('bet count is' + betCount)
@@ -250,6 +289,11 @@ betBtn.addEventListener("click", function(event) {
             betTotal.innerHTML = betCount.reduce(reducer)
         })
     }
-});
+}
 
+//initializes game by creating a deck and then shuffling it
+function init() {
+    createDeck();
+}
 
+init();
