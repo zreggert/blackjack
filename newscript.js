@@ -241,6 +241,9 @@ function handleDealBtn() {
 
 //starts the betting process
 betBtn.addEventListener("click", function(event) {
+    if (cash === 0) {
+        alert(`Looks like you are out of chips. Sorry, you're broke!`)
+    }
     handleBetBtn();
     betTotal.innerHTML = '';
     bet = 0
