@@ -148,6 +148,7 @@ function playDealersHand() {
     }
 }
 
+//compares the totals of the hands to determine a winner
 function compareHands() {
     console.log(`this function compares the hands`);
     playersHandTotal = sumOfCards(playersHand)
@@ -178,10 +179,6 @@ function playerLoses() {
     betTotal.innerHTML = '';
 }
 
-//resets table
-function resetTable() {
-    
-}
 
 //stay btn event listener
 stayBtn.addEventListener("click", function(event) {
@@ -213,7 +210,11 @@ function handleHitBtn() {
 dealBtn.addEventListener("click", function(event) {
     hitBtn.disabled = false;
     stayBtn.disabled = false;
-    handleDealBtn();
+    if (bet > cash) {
+        alert(`You don't have enough money to place this bet!`);
+    } else {
+        handleDealBtn();
+    }
 })
 
 //handles dealbtn functionality
@@ -289,6 +290,18 @@ function createChips() {
             betTotal.innerHTML = betCount.reduce(reducer)
         })
     }
+    let resetBet = document.createElement("button");
+    resetBet.innerHTML = `Reset`;
+    resetBet.classList.add('chip');
+    betAmounts.appendChild(resetBet)
+    resetBet.addEventListener("click", function(event) {
+        console.log(betCount)
+        bet -= bet
+        console.log(bet)
+        betCount = []
+        console.log(betCount)
+        betTotal.innerHTML = '';
+    })
 }
 
 //initializes game by creating a deck and then shuffling it
