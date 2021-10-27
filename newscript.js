@@ -83,7 +83,7 @@ function isBlackJack(hand) {
         stayBtn.disabled = true;
         dealerCards.lastChild.classList.remove("hidden-card");
         setTimeout(() => {
-            alert(`Blackjack! You win this hand!`)
+            alert(`Blackjack! You win!`)
         }, 500)
         playerWins();
     }
@@ -138,12 +138,12 @@ function playDealersHand() {
         dealersHandTotal = sumOfCards(dealersHand);
     }
     if (dealersHandTotal === 21) {
-        console.log(`dealer blackjack`);
+        alert(`Dealer has blackjack! You lose!`);
         playerLoses();
     } else if (dealersHandTotal < 21) {
         compareHands()
     } else {
-        console.log(`dealer busts. player wins`)
+        alert(`Dealer busts. You win!`)
         playerWins();
     }
 }
