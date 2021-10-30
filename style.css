@@ -1,8 +1,23 @@
 body {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+
 }
-.container{
+
+.table {
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    background-size: cover;
+    background-image: url('images/blackjack_table.jpg');
+    display: flex;
+    background-repeat: no-repeat;
+    border: 1px solid black;
+}
+
+.container {
     border: 2px solid black;
     height: 300px;
     width: 300px;
@@ -11,5 +26,77 @@ body {
 .hidden-card {
     border: 5px solid black;
     background-color: black;
-    width:fit-content
+    width:fit-content;
+}
+
+.dealers-side {
+    width: 100%;
+}
+
+#play-actions {
+    border-radius: 10%;
+    background-color: rgba(0, 0, 0, .5);
+    position: fixed;
+    display: flex;
+    right: 0px;
+    bottom: 0px;
+    width: 30%;
+    align-items: center;
+    align-content: center;
+    flex-direction: column;
+}
+
+.action {
+    display: flex;
+    padding-top: 10%;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 20%;
+}
+
+.action-btn {
+    width: 20%;
+    height: 100%;
+    font-size: 1.5em;
+}
+
+.bets {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#bet-amounts {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.chip {
+    margin: 10px;
+}
+
+#player-container {
+    display: flex;
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    width: 60%;
+    height: 50%
+}
+
+#player-stats {
+    border: 1px solid black;
+    padding: 10px 50px 10px 50px;
+    background-color: rgba(0, 0, 0, .5);;
+    display: flex;
+    position: fixed;
+    justify-content: space-evenly;
+    flex-direction: column;
+    bottom: 0%;
+    left: 5%;
+}
+
+p {
+    font-size: 2em;
+    color: white;
 }
