@@ -84,7 +84,7 @@ function isBlackJack(hand) {
     if (handTotal === 21) {
         hitBtn.disabled = true;
         stayBtn.disabled = true;
-        dealerCards.lastChild.removeChild("hidden-card");
+        dealerCards.lastChild.lastChild.remove();
         setTimeout(() => {
             alert(`Blackjack! You win!`)
         }, 500)
@@ -101,13 +101,24 @@ function sumOfCards(hand) {
         } else if (card.rank === "A") {
             if (handTotal <= 10) {
                 handTotal += 11
-            } else {
+            } else  {
                 handTotal += 1
             }
         } else {
             handTotal += parseInt(card.rank)
         }
     });
+    console.log('this is the player hand total ' + handTotal)
+
+    if (handTotal > 21) {
+        for ( let i = 0; i < hand.length; i++) {
+            if (hand[i].rank === "A") {
+                handTotal -= 10
+                console.log('adjusted hand total ' + handTotal)
+                return handTotal
+            }
+        }
+    }
     return handTotal
 }
 
@@ -150,24 +161,34 @@ function playDealersHand() {
         dealersHandTotal = sumOfCards(dealersHand);
     }
     if (dealersHandTotal === 21) {
-        alert(`Dealer has blackjack! You lose!`);
-        playerLoses();
+        setTimeout(() => {
+            alert(`Dealer has blackjack! You lose!`);
+            playerLoses();
+        }, 1000);
+        
     } else if (dealersHandTotal < 21) {
         compareHands()
     } else {
-        alert(`Dealer busts. You win!`)
-        playerWins();
+        setTimeout(() => {
+            alert(`Dealer busts. You win!`)
+            playerWins();
+        }, 1000)
     }
 }
 
 //compares the totals of the hands to determine a winner
 function compareHands() {
-    console.log(`this function compares the hands`);
     playersHandTotal = sumOfCards(playersHand)
     if (dealersHandTotal >= playersHandTotal) {
-        playerLoses();
+        setTimeout(() => {
+            alert("Dealer Wins!")
+            playerLoses();
+        }, 1000)
     } else {
-        playerWins();
+        setTimeout(() => {
+            alert("You Win!")
+            playerWins();
+        }, 1000)
     }
 }
 
@@ -176,8 +197,6 @@ function playerWins() {
     hitBtn.disabled = true;
     stayBtn.disabled = true;
     betBtn.disabled = false;
-    console.log(`winner`);
-    alert("You Win!")
     cash += (bet * 2);
     playerCash.innerHTML = cash
     betTotal.innerHTML = '';
@@ -188,8 +207,6 @@ function playerLoses() {
     hitBtn.disabled = true;
     stayBtn.disabled = true;
     betBtn.disabled = false;
-    console.log(`loser`);
-    alert("Dealer Wins!")
     betTotal.innerHTML = '';
 }
 
@@ -212,7 +229,6 @@ hitBtn.addEventListener("click", function(event) {
 //handles hit btn functions
 function handleHitBtn() {
     playersHand.push(deck.shift())
-    console.log(playersHand)
     playerCards.append(createCard(playersHand[playersHand.length - 1]))
     playersHandTotal = sumOfCards(playersHand);
     deckCount.innerHTML = deck.length
@@ -222,8 +238,6 @@ function handleHitBtn() {
 
 //dealBtn listener
 dealBtn.addEventListener("click", function(event) {
-    hitBtn.disabled = false;
-    stayBtn.disabled = false;
     if (bet > cash) {
         alert(`You don't have enough money to place this bet!`);
     } else {
@@ -233,12 +247,15 @@ dealBtn.addEventListener("click", function(event) {
 
 //handles dealbtn functionality
 function handleDealBtn() {
+    
     cash -= bet
     playerCash.innerHTML = cash
     if (bet === 0) {
         alert('Please place a bet to be dealt cards.')
     } else {
         dealBtn.disabled = true
+        hitBtn.disabled = false;
+        stayBtn.disabled = false;
         while (betAmounts.firstChild) {
             betAmounts.removeChild(betAmounts.firstChild)
         }
