@@ -25,7 +25,7 @@ playerCash.innerHTML = cash
 //function creates a single deck of 52
 function createDeck() {
     
-    let suits = ['S', 'H', 'C', 'D'];
+    let suits = ['spades', 'diamonds', 'clubs', 'hearts'];
     let rank = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
 
     for (let i = 0; i < suits.length; i++) {
@@ -68,7 +68,10 @@ function deal(deck) {
     dealersHand.forEach((card) => {
         dealerCards.appendChild(createCard(card))
     })
-    dealerCards.lastChild.classList.add("hidden-card")
+
+    let hiddenCard = document.createElement('div');
+    hiddenCard.className = "hidden-card";
+    dealerCards.lastChild.appendChild(hiddenCard)
 
     deckCount.innerHTML = deck.length;
 
@@ -81,7 +84,7 @@ function isBlackJack(hand) {
     if (handTotal === 21) {
         hitBtn.disabled = true;
         stayBtn.disabled = true;
-        dealerCards.lastChild.classList.remove("hidden-card");
+        dealerCards.lastChild.removeChild("hidden-card");
         setTimeout(() => {
             alert(`Blackjack! You win!`)
         }, 500)
@@ -110,8 +113,17 @@ function sumOfCards(hand) {
 
 //this function creates a card element from the card object
 function createCard(card) {
-    let cardEl = document.createElement('p');
-    cardEl.innerHTML = card.rank + card.suit;
+    let cardEl = document.createElement('div');
+    let rank = document.createElement('div');
+    let suit = document.createElement('div');
+    cardEl.className = 'card';
+    rank.className = 'rank';
+    suit.className = 'suit ' + card.suit;
+
+    rank.innerHTML = card.rank;
+    
+    cardEl.appendChild(rank);
+    cardEl.appendChild(suit);
     return cardEl
 }
 
@@ -120,7 +132,7 @@ function checkForBust(total) {
     if (total > 21) {
         hitBtn.disabled = true;
         stayBtn.disabled = true;
-        dealerCards.lastChild.classList.remove("hidden-card");
+        dealerCards.lastChild.lastChild.remove();
         setTimeout(() => {
             alert(`Bust! You lose!`)
         }, 500);
@@ -165,6 +177,7 @@ function playerWins() {
     stayBtn.disabled = true;
     betBtn.disabled = false;
     console.log(`winner`);
+    alert("You Win!")
     cash += (bet * 2);
     playerCash.innerHTML = cash
     betTotal.innerHTML = '';
@@ -176,6 +189,7 @@ function playerLoses() {
     stayBtn.disabled = true;
     betBtn.disabled = false;
     console.log(`loser`);
+    alert("Dealer Wins!")
     betTotal.innerHTML = '';
 }
 
@@ -186,7 +200,7 @@ stayBtn.addEventListener("click", function(event) {
 })
 //handles stay btn functions
 function handleStayBtn() {
-    dealerCards.lastChild.classList.remove("hidden-card");
+    dealerCards.lastChild.lastChild.remove();
     playDealersHand();
 }
 

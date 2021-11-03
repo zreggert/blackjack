@@ -15,18 +15,65 @@ body {
     display: flex;
     background-repeat: no-repeat;
     border: 1px solid black;
+    position: fixed;
+}
+
+.card {
+    border: 1px solid black;
+    border-radius: 9px;
+    width: 105px;
+    height: 150px;
+    float: left;
+    background-color: white;
+    padding: 3px;
+    margin: 5px;
+    z-index: -1;
+}
+
+.card .rank {
+    font-size: 20pt;
+}
+
+.card .suit {
+    background-image: url('https://www.thatsoftwaredude.com/images/post/0f631eeb-6c4a-4bfd-9f86-e0a08ae8584b.png');
+    height: 100px;
+    width: 90px;
+    margin: auto;
+    z-index: -1;
+}
+
+.card .diamonds {
+    background-position-y: 100px;
+}
+
+.card .hearts {
+    background-position-x: 90px;
+}
+
+.card .clubs {
+    background-position-x: 90px;
+    background-position-y: 100px;
 }
 
 .container {
-    border: 2px solid black;
     height: 300px;
     width: 300px;
 }
 
 .hidden-card {
-    border: 5px solid black;
-    background-color: black;
-    width:fit-content;
+    background-image: url('images/back_of_card.jpg') !important; 
+    background-size: cover;
+    z-index: 99;
+    border: 1px solid black;
+    border-radius: 9px;
+    width: 105px;
+    height: 150px;
+    padding: 3px;
+    margin: 5px;
+    position: absolute;
+    top: 0;
+    left: 123px;
+    
 }
 
 .dealers-side {
@@ -36,8 +83,10 @@ body {
 #deck-container {
     display: flex;
     position: fixed;
-    right: 0px;
+    top: 100px;
+    right: 100px;
     background-color: rgba(0, 0, 0, .5);
+    width: 500px;
 }
 
 #dealer-container {
