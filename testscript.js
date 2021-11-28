@@ -2,11 +2,13 @@ const dealBtn = document.querySelector("#deal-btn");
 const betBtn = document.querySelector("#bet-btn");
 const hitBtn = document.querySelector("#hit-btn");
 const stayBtn = document.querySelector("#stay-btn");
+const actionBtns = document.querySelector(".action");
 let deckCount = document.getElementById("deck-count");
 const betAmounts = document.getElementById("bet-amounts");
 let betTotal = document.getElementById("bet-total");
 let bet = 0;
 let playerCards = document.getElementById("player-cards");
+let playerSplitCards = document.getElementById("player-split-cards")
 let dealerCards = document.getElementById("dealer-cards");
 let playerTotal = document.getElementById("player-total");
 let playerCash = document.getElementById("player-cash");
@@ -51,13 +53,26 @@ function shuffleDeck(deck) {
     return deck
 }
 
+
+
 //deals cards to player's and dealer's hands
 function deal(deck) {
+
     console.log(`dealing deck`)
-    while (playersHand.length < 2 && dealersHand.length < 2) {
-        playersHand.push(deck.shift());
+    while ( dealersHand.length < 2) {
         dealersHand.push(deck.shift());
     };
+
+    playersHand = [
+        {
+            rank: 2,
+            suit: 'clubs'
+        },
+        {
+            rank: 2,
+            suit: 'hearts'
+        }
+    ]
     console.log(playersHand)
     console.log(dealersHand)
 
@@ -76,7 +91,28 @@ function deal(deck) {
     deckCount.innerHTML = deck.length;
 
     isBlackJack(playersHand);
+
+    //evoke function to check if the player has 2 cards with the same value to create option to split hand
+    isTwoOfAKind(playersHand);
 }
+
+//function to check if splitting is an option
+function isTwoOfAKind (hand) {
+    if(hand[0].rank === hand[1].rank) {
+        console.log("we have a match")
+        let splitBtn = document.createElement('button');
+        splitBtn.className = "action-btn";
+        splitBtn.innerText = "Split";
+        splitBtn.setAttribute('id', 'split-btn')
+        actionBtns.appendChild(splitBtn);
+        splitBtn.addEventListener("click", function(event) {
+            handleSplitBtn();
+        })
+    } else {
+        return
+    }
+}
+
 
 //function checks for blackjack
 function isBlackJack(hand) {
@@ -210,6 +246,16 @@ function playerLoses() {
     betTotal.innerHTML = '';
 }
 
+//handles split btn functions
+function handleSplitBtn() {
+    console.log("event listener is working");
+    let newHand = playersHand[1];
+    playerSplitCards.appendChild(createCard(newHand))
+    playersHand.pop();
+    playerCards.lastChild.remove();
+    console.log(playersHand)
+    console.log(newHand)
+}
 
 //stay btn event listener
 stayBtn.addEventListener("click", function(event) {

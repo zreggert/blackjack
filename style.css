@@ -36,24 +36,31 @@ body {
 }
 
 .card .suit {
-    background-image: url('https://www.thatsoftwaredude.com/images/post/0f631eeb-6c4a-4bfd-9f86-e0a08ae8584b.png');
-    height: 100px;
-    width: 90px;
+    height: 100%;
+    width: 90%;
     margin: auto;
-    z-index: -1;
+    display: flex;
+    justify-content: center;
+}
+
+.card .spades {
+    background-image: url('images/spade.png');
+    background-repeat: no-repeat;
 }
 
 .card .diamonds {
-    background-position-y: 100px;
+    background-image: url('images/diamond.png');
+    background-repeat: no-repeat;
 }
 
 .card .hearts {
-    background-position-x: 90px;
+    background-image: url('images/heart.png');
+    background-repeat: no-repeat;
 }
 
 .card .clubs {
-    background-position-x: 90px;
-    background-position-y: 100px;
+    background-image:url('images/club.png');
+    background-repeat: no-repeat;
 }
 
 .hidden-card {
@@ -96,7 +103,7 @@ body {
     top: 25%;
     right: 40%;
     left: 40%;
-    width: 20%;
+    width: 100%;
 }
 
 #play-actions {
@@ -172,6 +179,13 @@ body {
     width: 50%;
 }
 
+#player-cards {
+    padding: 50px;
+}
+
+#player-split-cards {
+    padding: 50px;
+}
 p {
     font-size: 1em;
     color: white;
